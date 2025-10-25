@@ -12,12 +12,12 @@ const data = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
   return (
-    <div className="bg-slate-800 text-slate-100 rounded-lg shadow-lg p-3 border border-slate-700">
-      <p className="text-sm font-semibold">{label}</p>
+    <div className="theme-card rounded-lg shadow-lg p-2 xs:p-3 theme-border">
+      <p className="text-xs xs:text-sm font-semibold theme-text mb-0.5 xs:mb-1">{label}</p>
       {payload.map((p, i) => (
-        <div key={i} className="flex items-center space-x-2 text-sm text-slate-200">
-          <span className="w-2 h-2 rounded-full" style={{ background: p.fill }} />
-          <span>{p.name}</span>
+        <div key={i} className="flex items-center gap-1.5 xs:gap-2 text-xs xs:text-sm theme-text">
+          <span className="w-1.5 h-1.5 xs:w-2 xs:h-2 rounded-full" style={{ background: p.fill }} />
+          <span className="truncate max-w-[100px] xs:max-w-none">{p.name}</span>
           <span className="font-medium">{p.value.toLocaleString()}</span>
         </div>
       ))}
@@ -30,8 +30,20 @@ const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) =>
   const radius = innerRadius + (outerRadius - innerRadius) * 1.15;
   const x = cx + radius * Math.cos(-midAngle * RAD);
   const y = cy + radius * Math.sin(-midAngle * RAD);
+  
+  // Responsive font size based on viewport width
+  const fontSize = window.innerWidth < 640 ? 10 : 
+                  window.innerWidth < 768 ? 12 : 14;
+                  
   return (
-    <text x={x} y={y} fill="#94A3B8" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" style={{ fontSize: 14, fontWeight: 600 }}>
+    <text 
+      x={x} 
+      y={y} 
+      fill="#94A3B8" 
+      textAnchor={x > cx ? 'start' : 'end'} 
+      dominantBaseline="central" 
+      style={{ fontSize, fontWeight: 600 }}
+    >
       {`${(percent * 100).toFixed(0)}%`}
     </text>
   );
@@ -41,25 +53,25 @@ export default function SalesChart() {
   const total = useMemo(() => data.reduce((s, d) => s + d.value, 0), []);
 
   return (
-    <div className='bg-white dark:bg-slate-900 backdrop-blur-xl rounded-b-2xl p-6 border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl'>
-      <div className='mb-4 flex items-start justify-between'>
+    <div className='theme-card backdrop-blur-xl rounded-2xl p-3 xs:p-4 sm:p-5 md:p-6 theme-border hover:shadow-xl'>
+      <div className='mb-3 xs:mb-4 flex flex-col xs:flex-row items-start gap-2 xs:items-center xs:justify-between'>
         <div>
-          <h3 className='text-lg font-bold text-slate-800 dark:text-white'>Sales by category</h3>
-          <p className='text-sm text-slate-500 dark:text-slate-400'>Production Distribution</p>
+          <h3 className='text-base xs:text-lg font-bold theme-text'>Sales by category</h3>
+          <p className='text-xs xs:text-sm theme-muted'>Production Distribution</p>
         </div>
-        <div className='text-right'>
-          <div className='text-xs text-slate-400'>Total</div>
-          <div className='text-sm font-semibold text-slate-800 dark:text-white'>{total.toLocaleString()}</div>
+        <div className='flex xs:flex-col items-baseline xs:items-end gap-1 xs:gap-0'>
+          <div className='text-[10px] xs:text-xs theme-muted'>Total</div>
+          <div className='text-xs xs:text-sm font-semibold theme-text'>{total.toLocaleString()}</div>
         </div>
       </div>
 
-  <div className='h-72 relative'>
+  <div className='h-56 xs:h-64 sm:h-72 relative'>
         <ResponsiveContainer>
           <PieChart>
             <defs>
               {/* subtle shadow for modern look */}
               <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#0f172a" floodOpacity="0.12" />
+                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0f172a" floodOpacity="0.12" />
               </filter>
             </defs>
 
@@ -69,9 +81,9 @@ export default function SalesChart() {
               nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius="40%"
-              outerRadius="85%"
-              paddingAngle={6}
+              innerRadius={window.innerWidth < 640 ? "35%" : "40%"}
+              outerRadius={window.innerWidth < 640 ? "75%" : window.innerWidth < 768 ? "80%" : "85%"}
+              paddingAngle={window.innerWidth < 640 ? 4 : 6}
               labelLine={false}
               label={renderLabel}
               animationDuration={800}
@@ -87,8 +99,22 @@ export default function SalesChart() {
               ))}
             </Pie>
 
-            <Tooltip content={<CustomTooltip />} wrapperStyle={{ outline: 'none' }} cursor={{ fill: 'rgba(2,6,23,0.6)' }} />
-            <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ textAlign: 'center' }} />
+            <Tooltip 
+              content={<CustomTooltip />} 
+              wrapperStyle={{ outline: 'none' }} 
+              cursor={{ fill: 'rgba(2,6,23,0.6)' }} 
+            />
+            <Legend 
+              verticalAlign="bottom" 
+              height={window.innerWidth < 640 ? 28 : 36} 
+              iconType="circle" 
+              iconSize={window.innerWidth < 640 ? 8 : 10}
+              wrapperStyle={{ 
+                textAlign: 'center',
+                fontSize: window.innerWidth < 640 ? '10px' : 
+                         window.innerWidth < 768 ? '12px' : '14px'
+              }} 
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

@@ -1,1 +1,68 @@
 @import "tailwindcss";
+
+:root {
+	--bg: #f8fafc;
+	--card: #ffffff;
+	--muted: #64748b; 
+	--text: #0f172a; 
+	--border: rgba(15,23,42,0.1);
+
+	/* accents */
+	--accent-from: #3b82f6; 
+	--accent-to: #8b5cf6; 
+
+	/* semantic colors */
+	--success: #10b981; 
+	--warning: #f59e0b; 
+	--danger: #ef4444; 
+}
+
+.dark {
+	--bg: #0f172a;
+	--card: rgba(30, 41, 59, 0.5);
+	--muted: #94a3b8; 
+	--text: #f8fafc;
+	--border: rgba(148,163,184,0.1);
+
+	--accent-from: #3b82f6;
+	--accent-to: #8b5cf6;
+
+	--success: #34d399; 
+	--warning: #f59e0b;
+	--danger: #f87171; 
+}
+
+
+.theme-bg { background-color: var(--bg); color: var(--text); }
+.theme-card { background-color: var(--card); color: var(--text); border-color: var(--border); }
+.theme-text { color: var(--text); }
+.theme-muted { color: var(--muted); }
+.theme-accent { background-image: linear-gradient(to right, var(--accent-from), var(--accent-to)); }
+.theme-border { border-color: var(--border); }
+
+@media (max-width: 640px) {
+	
+	:root {
+		--base-spacing: 0.5rem;
+	}
+	.sm-responsive-px { padding-left: 0.75rem; padding-right: 0.75rem; }
+}
+
+.theme-focus:focus { outline: 2px solid transparent; box-shadow: 0 0 0 4px rgba(59,130,246,0.12); }
+
+/* Utility to hide native scrollbars while preserving scrolling behavior */
+.no-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none; /* Safari and Chrome */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
